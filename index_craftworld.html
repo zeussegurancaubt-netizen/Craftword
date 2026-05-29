@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CraftWorld - Craques de Papel</title>
+  <meta name="description" content="Monte seus próprios craques de papel em casa. Baixe, imprima, recorte e monte." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --green:#04190d;
+      --green2:#092814;
+      --yellow:#ffc400;
+      --white:#f8f4ec;
+      --dark:#020b06;
+      --text:#ffffff;
+      --muted:#b8c7bc;
+      --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Poppins,Arial,sans-serif;background:var(--green);color:var(--text)}
+    a{text-decoration:none;color:inherit}
+    .topbar{position:fixed;top:0;left:0;width:100%;z-index:20;background:#020b06;color:#fff;text-align:center;font-size:12px;padding:6px 10px;border-bottom:1px solid rgba(255,196,0,.25)}
+    .timer span{display:inline-block;background:var(--yellow);color:#111;border-radius:4px;padding:2px 6px;margin:0 2px;font-weight:800}
+    section{padding:70px 20px}
+    .container{max-width:1100px;margin:auto;text-align:center}
+    .hero{padding-top:100px;background:radial-gradient(circle at top,#123f21 0%,#04190d 55%,#020b06 100%)}
+    .logo{width:110px;height:110px;border-radius:50%;background:#123f21;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:Anton;font-size:24px;color:var(--yellow);box-shadow:0 0 25px rgba(255,196,0,.25)}
+    .tag{display:inline-block;color:var(--yellow);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+    h1,h2,h3{font-family:Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:.5px;margin:0}
+    h1{font-size:clamp(38px,8vw,78px);line-height:.98;max-width:820px;margin:0 auto 18px}
+    h1 .yellow,h2 .yellow{color:var(--yellow)}
+    .subtitle{max-width:650px;margin:0 auto 28px;color:#d7e1d8;font-size:17px}
+    .btn{display:inline-block;background:var(--yellow);color:#111;font-weight:900;padding:18px 34px;border-radius:10px;text-transform:uppercase;font-size:15px;box-shadow:0 8px 0 #b88900;transition:.2s}
+    .btn:hover{transform:translateY(2px);box-shadow:0 5px 0 #b88900}
+    .safe{font-size:12px;color:#aac0b0;margin-top:14px}
+    .dark{background:#020b06}.cream{background:#f5f0e8;color:#111}.green2{background:var(--green2)}
+    h2{font-size:clamp(30px,5vw,54px);line-height:1.05;margin-bottom:14px}.lead{color:#59645c;max-width:720px;margin:0 auto 35px}.dark .lead,.green2 .lead{color:#b8c7bc}
+    .players{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:35px auto;max-width:980px}.player{background:#fff;border-radius:12px;padding:14px 10px;color:#111;box-shadow:0 8px 18px rgba(0,0,0,.25)}.avatar{height:120px;border-radius:10px;background:linear-gradient(180deg,#eaf1ff,#d4dae5);display:flex;align-items:center;justify-content:center;font-size:56px;margin-bottom:10px}.name{font-weight:900;text-transform:uppercase;font-size:13px;color:#0a3d20}.steps,.benefits,.proofs{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:34px}.step,.benefit,.proof{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:26px}.step b{font-size:46px;color:rgba(255,196,0,.25);display:block}.step h3,.benefit h3{font-family:Poppins;text-transform:none;font-size:18px;color:var(--yellow);margin:10px 0}.proof{background:#101010;color:#fff;min-height:260px;text-align:left;display:flex;flex-direction:column;justify-content:space-between}.proof .bubble{background:#1f2c25;padding:14px;border-radius:12px;font-size:14px;line-height:1.5}.proof strong{color:var(--yellow)}.benefits{grid-template-columns:repeat(4,1fr)}.benefit{background:#fff;color:#111;box-shadow:0 10px 25px rgba(0,0,0,.08)}.icon{font-size:32px}.pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px;align-items:stretch}.price-card{background:#fff;color:#111;border-radius:20px;overflow:hidden;border:2px solid transparent;display:flex;flex-direction:column}.price-card.featured{border-color:var(--yellow);transform:scale(1.04);box-shadow:0 0 35px rgba(255,196,0,.35)}.price-head{background:#082514;color:#fff;padding:26px 18px}.price-head h3{font-size:26px;color:var(--yellow)}.price-body{padding:28px 24px;flex:1}.price-old{text-decoration:line-through;color:#888}.price{font-family:Anton;font-size:52px;margin:5px 0}.price small{font-family:Poppins;font-size:18px}.features{text-align:left;line-height:1.9;margin:20px 0;font-size:14px}.features div::before{content:'✅ ';}.badge{background:var(--yellow);color:#111;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:900;display:inline-block;margin-bottom:10px}.faq{max-width:780px;margin:35px auto 0;text-align:left}.faq-item{background:#fff;border-radius:10px;margin-bottom:12px;color:#111;overflow:hidden}.faq-q{width:100%;border:0;background:#fff;padding:18px 20px;font-weight:800;text-align:left;cursor:pointer;display:flex;justify-content:space-between}.faq-a{display:none;padding:0 20px 18px;color:#555}.faq-item.open .faq-a{display:block}.footer{background:#020b06;text-align:center;padding:50px 20px;color:#78917e;font-size:13px}.sales-notif{position:fixed;left:18px;bottom:18px;z-index:30;background:#fff;color:#111;border-radius:12px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13px;opacity:0;transform:translateY(20px);transition:.35s}.sales-notif.show{opacity:1;transform:translateY(0)}
+    @media(max-width:850px){.players{grid-template-columns:repeat(2,1fr)}.steps,.pricing,.proofs,.benefits{grid-template-columns:1fr}.price-card.featured{transform:none}section{padding:55px 16px}.avatar{height:100px}}
+  </style>
+</head>
+<body>
+  <div class="topbar">⚠️ Oferta especial termina em <span class="timer"><span id="cd-minutes">16</span>:<span id="cd-seconds">00</span></span></div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="logo">Craft<br>World</div>
+      <div class="tag">⚽ Atividade criativa para crianças</div>
+      <h1>Seu filho só quer saber de celular? Coloque ele pra montar <span class="yellow">os próprios craques da copa 🌎</span></h1>
+      <p class="subtitle">Receba modelos digitais para imprimir, recortar, dobrar e montar em casa com uma atividade divertida, barata e longe das telas.</p>
+      <a class="btn" href="#checkout">Quero começar agora ⚽</a>
+      <div class="safe">Compra segura • Acesso imediato • Arquivo digital para imprimir</div>
+    </div>
+  </section>
+
+  <section class="dark">
+    <div class="container">
+      <span class="badge">Veja alguns modelos</span>
+      <h2>Veja os craques inspirados no futebol mundial<br><span class="yellow">que seu filho pode montar em casa</span></h2>
+      <p class="lead">Modelos em estilo divertido para a criança imprimir, recortar e montar sua própria coleção.</p>
+      <div class="players">
+        <div class="player"><div class="avatar">🇧🇷</div><div class="name">Neymar</div></div>
+        <div class="player"><div class="avatar">🇦🇷</div><div class="name">Messi</div></div>
+        <div class="player"><div class="avatar">🇵🇹</div><div class="name">Cristiano</div></div>
+        <div class="player"><div class="avatar">🇫🇷</div><div class="name">Mbappé</div></div>
+        <div class="player"><div class="avatar">🇧🇷</div><div class="name">Vini Jr</div></div>
+        <div class="player"><div class="avatar">🏆</div><div class="name">Lendas</div></div>
+      </div>
+      <a class="btn" href="#checkout">Quero acessar os modelos →</a>
+    </div>
+  </section>
+
+  <section class="green2">
+    <div class="container">
+      <span class="badge">Funciona assim</span>
+      <h2>Em 3 passos simples<br><span class="yellow">você já está montando</span></h2>
+      <div class="steps">
+        <div class="step"><b>01</b><h3>Acesse os arquivos</h3><p>Após a compra, receba os modelos digitais para baixar.</p></div>
+        <div class="step"><b>02</b><h3>Imprima em casa</h3><p>Use papel comum ou papel mais firme para melhor resultado.</p></div>
+        <div class="step"><b>03</b><h3>Recorte, dobre e monte</h3><p>A criança se diverte criando sua própria coleção.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cream">
+    <div class="container">
+      <span class="badge">Quem comprou aprovou</span>
+      <h2>Quem comprou já está<br><span class="yellow">montando seus craques</span></h2>
+      <p class="lead">Use esta área para colocar prints reais de WhatsApp, comentários e resultados dos clientes.</p>
+      <div class="proofs">
+        <div class="proof"><div class="bubble">“Meu filho largou o celular e ficou montando por horas. Muito bom!”</div><strong>Cliente verificado</strong></div>
+        <div class="proof"><div class="bubble">“Comprei, imprimi e no mesmo dia ele já estava brincando.”</div><strong>Acesso imediato</strong></div>
+        <div class="proof"><div class="bubble">“Atividade simples, barata e divertida para fazer em casa.”</div><strong>Recomendado</strong></div>
+      </div>
+      <br><a class="btn" href="#checkout">Quero igual também</a>
+    </div>
+  </section>
+
+  <section class="cream">
+    <div class="container">
+      <span class="badge">Por que funciona?</span>
+      <h2>Por que as crianças amam<br><span class="yellow">o CraftWorld?</span></h2>
+      <div class="benefits">
+        <div class="benefit"><div class="icon">✂️</div><h3>Atividade manual</h3><p>Estimula coordenação e criatividade.</p></div>
+        <div class="benefit"><div class="icon">⭐</div><h3>Craques conhecidos</h3><p>A criança se conecta com os ídolos do futebol.</p></div>
+        <div class="benefit"><div class="icon">📵</div><h3>Menos tempo de tela</h3><p>Uma alternativa divertida ao celular.</p></div>
+        <div class="benefit"><div class="icon">🌎</div><h3>Diversão em família</h3><p>Pais e filhos podem montar juntos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="checkout" class="green2">
+    <div class="container">
+      <span class="badge">Escolha sua coleção</span>
+      <h2>Comece sua coleção<br><span class="yellow">hoje mesmo!</span></h2>
+      <div class="pricing">
+        <div class="price-card">
+          <div class="price-head"><h3>Seleção Brasileira</h3><p>Pacote inicial</p></div>
+          <div class="price-body"><div class="price-old">De R$ 19,90</div><div class="price">R$ 5<small>,90</small></div><div class="features"><div>Modelos para imprimir</div><div>Acesso imediato</div><div>Entrega por e-mail</div></div><a class="btn" href="https://pay.kiwify.com/SEU-LINK-AQUI">Quero o básico</a></div>
+        </div>
+        <div class="price-card featured">
+          <div class="price-head"><span class="badge">Mais escolhido</span><h3>Craques da Copa</h3><p>Melhor custo-benefício</p></div>
+          <div class="price-body"><div class="price-old">De R$ 39,90</div><div class="price">R$ 12<small>,90</small></div><div class="features"><div>Mais modelos de jogadores</div><div>Arquivos em alta qualidade</div><div>Ideal para coleção</div><div>Acesso imediato</div></div><a class="btn" href="https://pay.kiwify.com/SEU-LINK-AQUI">Quero este pacote</a></div>
+        </div>
+        <div class="price-card">
+          <div class="price-head"><h3>Pack Completo</h3><p>Oferta com bônus</p></div>
+          <div class="price-body"><div class="price-old">De R$ 69,90</div><div class="price">R$ 23<small>,90</small></div><div class="features"><div>Todos os modelos</div><div>Bônus de lendas</div><div>Novas atualizações</div><div>Melhor opção para família</div></div><a class="btn" href="https://pay.kiwify.com/SEU-LINK-AQUI">Quero o pack completo</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cream">
+    <div class="container">
+      <span class="badge">Dúvidas</span>
+      <h2>Perguntas <span class="yellow">frequentes</span></h2>
+      <div class="faq">
+        <div class="faq-item"><button class="faq-q">O produto é físico ou digital? <span>+</span></button><div class="faq-a">É digital. Você baixa os arquivos e imprime em casa.</div></div>
+        <div class="faq-item"><button class="faq-q">Preciso de impressora especial? <span>+</span></button><div class="faq-a">Não. Uma impressora comum já funciona.</div></div>
+        <div class="faq-item"><button class="faq-q">Como recebo o acesso? <span>+</span></button><div class="faq-a">Após a compra, o acesso é enviado para seu e-mail.</div></div>
+        <div class="faq-item"><button class="faq-q">Serve para qual idade? <span>+</span></button><div class="faq-a">Recomendado para crianças com supervisão de um adulto, principalmente na parte de recorte.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero">
+    <div class="container">
+      <h2>Pronto para tirar<br><span class="yellow">seu filho do celular hoje?</span></h2>
+      <p class="subtitle">Escolha seu pacote, receba os arquivos e comece a montar em poucos minutos.</p>
+      <a class="btn" href="#checkout">Quero começar agora ⚽</a>
+    </div>
+  </section>
+
+  <div class="footer">
+    <div class="logo" style="width:80px;height:80px;font-size:18px">Craft<br>World</div>
+    <p>Produto digital. Não somos afiliados a clubes, jogadores ou entidades oficiais. Imagens e nomes devem ser adaptados conforme seus direitos de uso.</p>
+    <p>© 2026 CraftWorld. Todos os direitos reservados.</p>
+  </div>
+
+  <div id="sales-notif" class="sales-notif">🛒 <span class="msg">Maria acabou de comprar em São Paulo - SP</span></div>
+
+  <script>
+    (function(){
+      var DURATION = 16 * 60;
+      var KEY = 'craftworld_countdown_v1';
+      var now = Math.floor(Date.now()/1000);
+      var stored = localStorage.getItem(KEY);
+      if(!stored || now >= parseInt(stored,10)){ localStorage.setItem(KEY, now + DURATION); }
+      var min = document.getElementById('cd-minutes');
+      var sec = document.getElementById('cd-seconds');
+      function pad(n){return n<10?'0'+n:''+n}
+      function tick(){
+        var remaining = parseInt(localStorage.getItem(KEY),10) - Math.floor(Date.now()/1000);
+        if(remaining <= 0){ localStorage.setItem(KEY, Math.floor(Date.now()/1000)+DURATION); remaining = DURATION; }
+        min.textContent = pad(Math.floor(remaining/60));
+        sec.textContent = pad(remaining%60);
+      }
+      tick(); setInterval(tick,1000);
+    })();
+
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click',function(e){
+        var t=document.querySelector(this.getAttribute('href')); if(!t)return;
+        e.preventDefault(); t.scrollIntoView({behavior:'smooth'});
+      })
+    });
+
+    document.querySelectorAll('.faq-q').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var item=this.parentElement;
+        document.querySelectorAll('.faq-item').forEach(function(i){ if(i!==item)i.classList.remove('open'); });
+        item.classList.toggle('open');
+      });
+    });
+
+    (function(){
+      var messages=[
+        'João acabou de comprar em Maceió - AL','Maria garantiu o Pack Completo em São Paulo - SP','Lucas comprou o pacote Brasil em Recife - PE','Ana acabou de acessar o CraftWorld em Salvador - BA','Fernanda garantiu o Pack Completo em Belo Horizonte - MG','Rafael comprou há 2 minutos no Rio de Janeiro - RJ','Patrícia acabou de comprar em Fortaleza - CE','Carlos garantiu o pacote Brasil em Aracaju - SE'
+      ];
+      var box=document.getElementById('sales-notif'), msg=box.querySelector('.msg'), last=-1;
+      function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+      function show(){var i; do{i=rand(0,messages.length-1)}while(i===last); last=i; msg.textContent=messages[i]; box.classList.add('show'); setTimeout(function(){box.classList.remove('show')},5000)}
+      function loop(){setTimeout(function(){show();loop()},rand(22,45)*1000)}
+      setTimeout(function(){show();loop()},8000)
+    })();
+
+    (function(){
+      var KEY='craftworld_utms';
+      var tracked=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','ttclid','src','ref','sck'];
+      function params(){var o={},s=location.search.slice(1); if(!s)return o; s.split('&').forEach(function(p){var i=p.indexOf('='); if(i>0)o[decodeURIComponent(p.slice(0,i))]=decodeURIComponent(p.slice(i+1));}); return o}
+      var p=params(); if(tracked.some(function(k){return p[k]})) localStorage.setItem(KEY,JSON.stringify(p));
+      var saved={}; try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+      var active=Object.assign({},saved,p);
+      function append(url){var qs=Object.keys(active).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(active[k])}).join('&'); return qs ? url+(url.indexOf('?')>-1?'&':'?')+qs : url}
+      document.querySelectorAll('a[href*="pay.kiwify.com"],a[href*="pay.hotmart.com"],a[href*="pay.lowify.com.br"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault(); location.href=append(this.href)})})
+    })();
+  </script>
+</body>
+</html>
