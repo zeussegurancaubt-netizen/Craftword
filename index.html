@@ -753,89 +753,66 @@
 
   <script>
     (function(){
-      var DURATION=16*60,KEY='craftworld_countdown_v1',now=Math.floor(Date.now()/1000),stored=localStorage.getItem(KEY);
-      if(!stored||now>=parseInt(stored,10)){localStorage.setItem(KEY,now+DURATION);}
-      var min=document.getElementById('cd-minutes'),sec=document.getElementById('cd-seconds');
-      function pad(n){return n<10?'0'+n:''+n}
-      function tick(){var r=parseInt(localStorage.getItem(KEY),10)-Math.floor(Date.now()/1000);if(r<=0){localStorage.setItem(KEY,Math.floor(Date.now()/1000)+DURATION);r=DURATION;}min.textContent=pad(Math.floor(r/60));sec.textContent=pad(r%60);}
-      tick();setInterval(tick,1000);
-    })();
-    document.querySelectorAll('a[href^="#"]').forEach(function(a){
-      a.addEventListener('click',function(e){var t=document.querySelector(this.getAttribute('href'));if(!t)return;e.preventDefault();t.scrollIntoView({behavior:'smooth'});})
-    });
-    document.querySelectorAll('.faq-q').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var item=this.parentElement;
-        document.querySelectorAll('.faq-item').forEach(function(i){if(i!==item)i.classList.remove('open');});
-        item.classList.toggle('open');
-      });
-    });
-    (function(){
-      var messages=['João acabou de comprar em Maceió - AL','Maria garantiu o Pack Completo em São Paulo - SP','Lucas comprou o pacote Brasil em Recife - PE','Ana acabou de acessar o CraftWorld em Salvador - BA','Fernanda garantiu o Pack Completo em Belo Horizonte - MG','Rafael comprou há 2 minutos no Rio de Janeiro - RJ','Patrícia acabou de comprar em Fortaleza - CE','Carlos garantiu o pacote Brasil em Aracaju - SE'];
-      var box=document.getElementById('sales-notif'),msg=box.querySelector('.msg'),last=-1;
-      function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-      function show(){var i;do{i=rand(0,messages.length-1)}while(i===last);last=i;msg.textContent=messages[i];box.classList.add('show');setTimeout(function(){box.classList.remove('show')},5000)}
-      function loop(){setTimeout(function(){show();loop()},rand(22,45)*1000)}
-      setTimeout(function(){show();loop()},8000)
-    })();
-    (function(){
-      var KEY='craftworld_utms',tracked=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','ttclid','src','ref','sck'];
-      function params(){var o={},s=location.search.slice(1);if(!s)return o;s.split('&').forEach(function(p){var i=p.indexOf('=');if(i>0)o[decodeURIComponent(p.slice(0,i))]=decodeURIComponent(p.slice(i+1));});return o}
-      var p=params();if(tracked.some(function(k){return p[k]}))localStorage.setItem(KEY,JSON.stringify(p));
-      var saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
-      var active=Object.assign({},saved,p);
-      function append(url){var qs=Object.keys(active).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(active[k])}).join('&');return qs?url+(url.indexOf('?')>-1?'&':'?')+qs:url}
-      document.querySelectorAll('a[href*="pay.kiwify.com"],a[href*="pay.hotmart.com"],a[href*="pay.lowify.com.br"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();location.href=append(this.href)});})
-    })();
-    (function(){
-      function resumeAt(track,finalX){
-        var isRow2=track.classList.contains('row2');
-        var dur=isRow2?30:35;
-        var sw=8*((window.innerWidth<=600?130:160)+14);
-        var n,delay;
-        if(!isRow2){n=((-finalX)%sw+sw)%sw;delay=-(n/sw)*dur;}
-        else{n=((finalX%sw)+sw)%sw;delay=-(n/sw)*dur;}
-        track.style.animation='none';
-        void track.offsetWidth;
-        track.style.animationDelay=delay+'s';
-        track.style.animation='';
-      }
       document.querySelectorAll('.carousel-wrapper').forEach(function(wrapper){
         var track=wrapper.querySelector('.carousel-track');
         if(!track)return;
-        var down=false,startX=0,baseX=0,moved=false;
+        var isRow2=track.classList.contains('row2');
+        var cardW=window.innerWidth<=600?130:160;
+        var sw=8*(cardW+14);
+        var pxPerMs=isRow2?sw/30000:-(sw/35000);
+        var pos=isRow2?-sw:0;
+        var lastTs=null,dragging=false,moved=false;
+        var dragStartClient=0,dragStartPos=0;
+        var lastClientX=0,lastMoveTs=0;
+
+        function norm(p){p=p%sw;if(p>0)p-=sw;if(p<=-sw)p+=sw;return p;}
+
+        track.style.animation='none';
+        track.style.transform='translateX('+pos+'px)';
+
+        (function frame(ts){
+          if(!dragging){
+            if(lastTs!==null){pos=norm(pos+pxPerMs*(ts-lastTs));track.style.transform='translateX('+pos+'px)';}
+            lastTs=ts;
+          }
+          requestAnimationFrame(frame);
+        })(0);
+
         function cx(e){return e.touches?e.touches[0].clientX:e.clientX;}
         function cxEnd(e){return e.changedTouches?e.changedTouches[0].clientX:e.clientX;}
+
         function onDown(e){
-          down=true;moved=false;startX=cx(e);
-          var m=new DOMMatrix(getComputedStyle(track).transform);
-          baseX=isNaN(m.m41)?0:m.m41;
-          track.style.animation='none';
-          track.style.transform='translateX('+baseX+'px)';
-          wrapper.style.cursor='grabbing';
+          dragging=true;moved=false;
+          dragStartClient=cx(e);dragStartPos=pos;
+          lastClientX=cx(e);lastMoveTs=performance.now();
+          lastTs=null;wrapper.style.cursor='grabbing';
         }
         function onMove(e){
-          if(!down)return;
-          var dx=cx(e)-startX;
+          if(!dragging)return;
+          var clientX=cx(e),now=performance.now();
+          lastClientX=clientX;lastMoveTs=now;
+          var dx=clientX-dragStartClient;
           if(Math.abs(dx)>5)moved=true;
-          track.style.transform='translateX('+(baseX+dx)+'px)';
+          pos=norm(dragStartPos+dx);
+          track.style.transform='translateX('+pos+'px)';
           if(moved&&e.cancelable)e.preventDefault();
         }
         function onUp(e){
-          if(!down)return;
-          down=false;wrapper.style.cursor='grab';
-          var dx=cxEnd(e)-startX;
-          resumeAt(track,baseX+dx);
-          track.style.transform='';
+          if(!dragging)return;
+          dragging=false;wrapper.style.cursor='grab';
+          pos=norm(dragStartPos+(cxEnd(e)-dragStartClient));
+          lastTs=null;
           if(moved){wrapper.addEventListener('click',function stop(ev){ev.stopPropagation();ev.preventDefault();wrapper.removeEventListener('click',stop,true);},true);}
         }
+
         wrapper.style.cursor='grab';
+        wrapper.style.userSelect='none';
         wrapper.addEventListener('mousedown',onDown);
         wrapper.addEventListener('touchstart',onDown,{passive:true});
-        window.addEventListener('mousemove',function(e){if(down)onMove(e);});
-        window.addEventListener('touchmove',function(e){if(down)onMove(e);},{passive:false});
-        window.addEventListener('mouseup',function(e){if(down)onUp(e);});
-        window.addEventListener('touchend',function(e){if(down)onUp(e);});
+        window.addEventListener('mousemove',function(e){if(dragging)onMove(e);});
+        window.addEventListener('touchmove',function(e){if(dragging)onMove(e);},{passive:false});
+        window.addEventListener('mouseup',function(e){if(dragging)onUp(e);});
+        window.addEventListener('touchend',function(e){if(dragging)onUp(e);});
       });
     })();
   </script>
