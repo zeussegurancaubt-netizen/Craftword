@@ -313,5 +313,31 @@ if(el){el.scrollIntoView({behavior:'smooth',block:'center'});}
 });
 });
 </script>
+<script>
+(function(){
+  var DURATION=16*60*1000; // 16 min
+  var KEY='cw_offer_deadline';
+  var mEl=document.getElementById('cd-minutes'), sEl=document.getElementById('cd-seconds');
+  if(!mEl||!sEl) return;
+  function now(){return Date.now();}
+  function getDeadline(){
+    var d;
+    try{ d=parseInt(localStorage.getItem(KEY),10); }catch(e){}
+    if(!d||isNaN(d)||d-now()<=0){ d=now()+DURATION; try{localStorage.setItem(KEY,d);}catch(e){} }
+    return d;
+  }
+  var deadline=getDeadline();
+  function pad(n){return n<10?'0'+n:''+n;}
+  function tick(){
+    var left=deadline-now();
+    if(left<=0){ deadline=now()+DURATION; try{localStorage.setItem(KEY,deadline);}catch(e){} left=DURATION; }
+    var totalSec=Math.floor(left/1000);
+    mEl.textContent=pad(Math.floor(totalSec/60));
+    sEl.textContent=pad(totalSec%60);
+  }
+  tick();
+  setInterval(tick,1000);
+})();
+</script>
 </body>
 </html>
