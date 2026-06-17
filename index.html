@@ -505,18 +505,38 @@ if(el){el.scrollIntoView({behavior:'smooth',block:'center'});}
 </div>
 
 <script>
+var upsellOverlay = document.getElementById('upsell-overlay');
+
 function abrirPopupUpsell(e) {
-  e.preventDefault();
-  document.getElementById('upsell-overlay').classList.add('ativo');
+  if (e) e.preventDefault();
+  if (upsellOverlay.classList.contains('ativo')) return;
+  upsellOverlay.classList.add('ativo');
   document.body.style.overflow = 'hidden';
+  // Registra um estado no histórico para que o botão "voltar" do celular
+  // feche apenas o popup, sem sair da página.
+  history.pushState({ upsell: true }, '');
 }
+
 document.getElementById('upsell-overlay').addEventListener('click', function(e) {
   if (e.target === this) fecharPopupUpsell();
 });
+
 function fecharPopupUpsell() {
-  document.getElementById('upsell-overlay').classList.remove('ativo');
+  if (!upsellOverlay.classList.contains('ativo')) return;
+  upsellOverlay.classList.remove('ativo');
   document.body.style.overflow = '';
+  // Se o popup foi fechado pela interface (clique fora), removemos o estado
+  // que adicionamos para manter o histórico limpo.
+  if (history.state && history.state.upsell) history.back();
 }
+
+// Botão "voltar" do navegador/celular: fecha o popup em vez de sair da página.
+window.addEventListener('popstate', function() {
+  if (upsellOverlay.classList.contains('ativo')) {
+    upsellOverlay.classList.remove('ativo');
+    document.body.style.overflow = '';
+  }
+});
 </script>
 <!-- ===== FIM POPUP UPSELL ===== --></body>
 </html>
